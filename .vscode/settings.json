@@ -1,0 +1,39 @@
+{
+	"typescript.tsdk": "node_modules/typescript/lib",
+	"typescript.enablePromptUseWorkspaceTsdk": true,
+	"files.eol": "\n",
+
+	// Rojo project files accept // comments (verified against rojo 7.7.0),
+	// but VS Code parses *.json as strict JSON and flags them as errors.
+	// Treating them as JSONC makes comments render gray instead.
+	"files.associations": {
+		"*.project.json": "jsonc",
+		".luaurc": "jsonc"
+	},
+
+	// Auto-imports and quick-fixes use the tsconfig "paths" aliases
+	// (@shared/*, @server/*) instead of ../../../ relative paths.
+	"typescript.preferences.importModuleSpecifier": "non-relative",
+	"typescript.preferences.autoImportFileExcludePatterns": [
+		"**/out/**"
+	],
+	"typescript.updateImportsOnFileMove.enabled": "always",
+
+	// Type "Replic" + Tab and get `ReplicatedStorage` with its import written
+	// for you. "auto" only indexes package.json deps it considers cheap, which
+	// can skip @rbxts/services; "on" always indexes them.
+	"typescript.suggest.autoImports": true,
+	"typescript.preferences.includePackageJsonAutoImports": "on",
+
+	// Tab completes the best match even before the suggestion popup appears.
+	"editor.tabCompletion": "on",
+
+	// Scoped to TS so Luau files keep their word-based suggestions.
+	"[typescript]": {
+		// Plain word matches from open files otherwise outrank the real
+		// auto-import entry and steal the Tab press.
+		"editor.suggest.showWords": false,
+		"editor.suggestSelection": "first",
+		"editor.acceptSuggestionOnCommitCharacter": false
+	}
+}
