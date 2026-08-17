@@ -103,10 +103,10 @@ export class BP_BuildableWall extends BP_Buildable {
     public static readonly WallLinks = WallLinks;
 
     public WallThickness = 1;
-    public WallHeight = 15;
+    public WallHeight = 7;
     public WallColor = Color3.fromRGB(125, 125, 125);
     public WallMaterial: Enum.Material = Enum.Material.SmoothPlastic;
-    public MaxLinkDistance = 40;
+    public MaxLinkDistance = 30;
     public MaxLinks = 3;
     public RelinkOnPlace = true;
     public RelinkOnDestroy = true;
@@ -154,7 +154,6 @@ export class BP_BuildableWall extends BP_Buildable {
         }
 
         const MaxDistance = this.MaxLinkDistance
-        const CanSwap = this.RelinkOnPlace === true
 
         for (const Other of Bucket) {
             if (Other === this || Other.Destroyed) {
@@ -175,12 +174,6 @@ export class BP_BuildableWall extends BP_Buildable {
 
             if (this.IsLinkedTo(Other)) {
                 continue
-            }
-
-            if (Other.LinkCount() >= Other.MaxLinks) {
-                if (!CanSwap || Other.FarthestLinkDistance() <= Distance) {
-                    continue
-                }
             }
 
             Candidates.push({ Other: Other, Distance: Distance })
@@ -249,7 +242,7 @@ export class BP_BuildableWall extends BP_Buildable {
             return 0
         }
 
-        const Budget = this.MaxLinks - this._segments.size()
+        const Budget = this.MaxLinks - this.OutboundCount()
 
         if (Budget <= 0) {
             return 0
@@ -263,14 +256,6 @@ export class BP_BuildableWall extends BP_Buildable {
 
         for (const Entry of Candidates) {
             const Other = Entry.Other
-
-            if (Other.LinkCount() >= Other.MaxLinks) {
-                Other.DropFarthestLink()
-
-                if (Other.LinkCount() >= Other.MaxLinks) {
-                    continue
-                }
-            }
 
             const Part = new Instance("Part")
             Part.Name = "WallSegment"
@@ -305,6 +290,10 @@ export class BP_BuildableWall extends BP_Buildable {
         }
 
         this.LinkPass()
+
+        if (this.RelinkOnPlace) {
+            this.NotifyNeighbours()
+        }
     }
 
     private Unregister() {
@@ -322,8 +311,8 @@ export class BP_BuildableWall extends BP_Buildable {
         }
     }
 
-    private TopUpNeighbours() {
-        if (Relinking || this.RelinkOnDestroy !== true) {
+    private NotifyNeighbours() {
+        if (Relinking) {
             return
         }
 
@@ -340,7 +329,7 @@ export class BP_BuildableWall extends BP_Buildable {
         const Reach = this.MaxLinkDistance
 
         for (const Other of [...Bucket]) {
-            if (Other.Destroyed) {
+            if (Other === this || Other.Destroyed) {
                 continue
             }
 
@@ -358,6 +347,14 @@ export class BP_BuildableWall extends BP_Buildable {
         Relinking = false
     }
 
+    private TopUpNeighbours() {
+        if (this.RelinkOnDestroy !== true) {
+            return
+        }
+
+        this.NotifyNeighbours()
+    }
+
     private FadeSegment(Part: BasePart) {
         Part.CanCollide = false
         Part.Color = new Color3(0, 0, 0)
@@ -372,10 +369,10 @@ export class BP_BuildableWall extends BP_Buildable {
     }
 
     private DropSegments(Fade: boolean) {
-        const Segments = this._segments
+        const Dropped = this._segments
         this._segments = []
 
-        for (const Segment of Segments) {
+        for (const Segment of Dropped) {
             Segment.A.DetachSegment(Segment)
             Segment.B.DetachSegment(Segment)
 
@@ -388,10 +385,11 @@ export class BP_BuildableWall extends BP_Buildable {
     }
 
     public ModelReady(Target: Model, Position: CFrame): void {
+        this.AttachProcess(SEGMENT_PROCESS, () => this.UpdateSegments())
+
         super.ModelReady(Target, Position)
 
         this.RegisterAndLink()
-        this.AttachProcess(SEGMENT_PROCESS, () => this.UpdateSegments())
     }
 
     public OnBuilt(): void {
@@ -426,6 +424,18 @@ export class BP_BuildableWall extends BP_Buildable {
 
     public LinkCount(): number {
         return this._segments.size()
+    }
+
+    public OutboundCount(): number {
+        let Count = 0
+
+        for (const Segment of this._segments) {
+            if (Segment.B === this) {
+                Count += 1
+            }
+        }
+
+        return Count
     }
 
     public IsLinkedTo(Other: BP_BuildableWall): boolean {
@@ -464,11 +474,11 @@ export class BP_BuildableWall extends BP_Buildable {
         return Worst
     }
 
-    public DropFarthestLink() {
+    public DropFarthestLink(): BP_BuildableWall | undefined {
         const Target = this.Model as Model | undefined
 
         if (Target === undefined) {
-            return
+            return undefined
         }
 
         const OwnPos = Target.GetPivot().Position
@@ -491,13 +501,16 @@ export class BP_BuildableWall extends BP_Buildable {
         }
 
         if (WorstIndex === undefined) {
-            return
+            return undefined
         }
 
         const Segment = this._segments.remove(WorstIndex) as WallSegment
+        const Partner = PartnerOf(Segment, this)
 
-        PartnerOf(Segment, this).DetachSegment(Segment)
+        Partner.DetachSegment(Segment)
         Segment.Part.Destroy()
+
+        return Partner
     }
 
     public TopUpLinks() {
@@ -509,7 +522,6 @@ export class BP_BuildableWall extends BP_Buildable {
             return
         }
 
-        this.DropSegments(false)
         this.LinkPass()
         this.UpdateSegments()
     }

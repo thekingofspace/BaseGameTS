@@ -52,27 +52,6 @@
 					"$path": "outLobby/Lobby/client"
 				}
 			}
-		},
-
-		"Workspace": {
-			"$className": "Workspace",
-			"$properties": {
-				"FilteringEnabled": true
-			}
-		},
-
-		"HttpService": {
-			"$className": "HttpService",
-			"$properties": {
-				"HttpEnabled": true
-			}
-		},
-
-		"SoundService": {
-			"$className": "SoundService",
-			"$properties": {
-				"RespectFilteringEnabled": true
-			}
 		}
 	}
 }
