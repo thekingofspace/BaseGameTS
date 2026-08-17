@@ -11,6 +11,18 @@
 		".luaurc": "jsonc"
 	},
 
+	// Collapses the repo root: every loose file there (tsconfig.json,
+	// *.project.json, aftman.toml, .gitignore, the lock file...) hangs off
+	// package.json instead of cluttering the tree. Nesting only ever applies to
+	// files, so src/, Modules/ and the other folders are untouched, and "*"
+	// picks up anything added at the root later. Nesting is per-directory and
+	// package.json only exists at the root, so nothing inside src/ is affected.
+	"explorer.fileNesting.enabled": true,
+	"explorer.fileNesting.expand": false,
+	"explorer.fileNesting.patterns": {
+		"package.json": "*"
+	},
+
 	// Auto-imports and quick-fixes use the tsconfig "paths" aliases
 	// (@shared/*, @server/*) instead of ../../../ relative paths.
 	"typescript.preferences.importModuleSpecifier": "non-relative",

@@ -1,5 +1,5 @@
 {
-	"name": "BaseGame",
+	"name": "BaseGameLobby",
 	"globIgnorePaths": [
 		"**/package.json",
 		"**/tsconfig.json",
@@ -14,10 +14,10 @@
 				"$path": "Modules/Shared"
 			},
 			"PrimaryGame": {
-				"$path": "out/Main/PrimaryGame"
+				"$path": "outLobby/Lobby/PrimaryGame"
 			},
 			"SharedGame": {
-				"$path": "out/Shared"
+				"$path": "outLobby/Shared"
 			},
 			"rbxts_include": {
 				"$path": "include",
@@ -40,7 +40,7 @@
 		"ServerScriptService": {
 			"$className": "ServerScriptService",
 			"Server": {
-				"$path": "out/Main/server"
+				"$path": "outLobby/Lobby/server"
 			}
 		},
 
@@ -49,7 +49,7 @@
 			"StarterPlayerScripts": {
 				"$className": "StarterPlayerScripts",
 				"Client": {
-					"$path": "out/Main/client"
+					"$path": "outLobby/Lobby/client"
 				}
 			}
 		},

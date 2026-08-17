@@ -1,0 +1,24 @@
+{
+	"extends": "./tsconfig.json",
+
+	"compilerOptions": {
+		"rootDir": "src",
+		"outDir": "outLobby",
+		"baseUrl": "src",
+
+		// Same alias names as the main place. "@game/*" swings to the lobby's own
+		// PrimaryGame, while "@data/*", "@shared/*" and "@server/*" stay pointed at
+		// the one shared copy.
+		"paths": {
+			"@shared/*": ["../Modules/Shared/*"],
+			"@server/*": ["../Modules/Server/*"],
+			"@data/*": ["Shared/*"],
+			"@game/*": ["Lobby/PrimaryGame/*"],
+			"Modules/*": ["../Modules/*"]
+		},
+
+		"tsBuildInfoFile": "outLobby/tsconfig.tsbuildinfo"
+	},
+
+	"include": ["src/Lobby", "src/Shared", "Modules"]
+}

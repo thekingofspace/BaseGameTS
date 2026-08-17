@@ -5,7 +5,10 @@
   "main": "index.js",
   "scripts": {
     "build": "rbxtsc",
-    "watch": "rbxtsc -w"
+    "watch": "rbxtsc -w",
+    "build:lobby": "rbxtsc -p tsconfig.lobby.json --rojo lobby.project.json",
+    "watch:lobby": "rbxtsc -w -p tsconfig.lobby.json --rojo lobby.project.json",
+    "build:all": "rbxtsc && rbxtsc -p tsconfig.lobby.json --rojo lobby.project.json"
   },
   "keywords": [],
   "author": "",

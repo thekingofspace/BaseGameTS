@@ -19,16 +19,24 @@
 
 		// configurable
 		"skipLibCheck": true,
+
+		// rootDir is "src", not "src/Main", because src/Shared compiles into this
+		// place too and rootDir has to cover every emitted file. That is what puts
+		// the Main/ and Shared/ level in the out tree.
 		"rootDir": "src",
 		"outDir": "out",
 		"baseUrl": "src",
 		"paths": {
 			"@shared/*": ["../Modules/Shared/*"],
 			"@server/*": ["../Modules/Server/*"],
-			"@game/*": ["PrimaryGame/*"],
+			"@data/*": ["Shared/*"],
+			"@game/*": ["Main/PrimaryGame/*"],
 			"Modules/*": ["../Modules/*"]
 		},
 		"incremental": true,
 		"tsBuildInfoFile": "out/tsconfig.tsbuildinfo"
-	}
+	},
+
+	// src/Lobby is deliberately absent — it belongs to the other place.
+	"include": ["src/Main", "src/Shared", "Modules"]
 }

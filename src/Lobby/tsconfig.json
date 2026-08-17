@@ -1,0 +1,7 @@
+{
+	// The editor only auto-discovers configs named "tsconfig.json", so without
+	// this file src/Lobby belongs to no project and the path aliases fail to
+	// resolve. Builds are unaffected either way and still run from
+	// tsconfig.lobby.json at the repo root.
+	"extends": "../../tsconfig.lobby.json"
+}
