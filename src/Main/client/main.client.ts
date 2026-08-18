@@ -3,7 +3,9 @@ import { Players, ReplicatedStorage, RunService } from "@rbxts/services";
 //-------------------------------------------------------------------- MODULES
 import Blackbox from "@shared/Blackbox";
 import * as PlayerData from "@game/Classes/PlayerData";
+import "@game/Classes/Structure/BP_BuildableWall";
 //-------------------------------------------------------------------- Pointers
+
 const GameStorage = ReplicatedStorage.WaitForChild("PrimaryGame", 500)
 const ClassStorage = GameStorage !== undefined ? GameStorage.FindFirstChild("Classes") : undefined
 const Structures = ClassStorage !== undefined ? ClassStorage.FindFirstChild("Structure") : undefined
@@ -41,3 +43,4 @@ if (Structures !== undefined) {
         }
     }
 }
+

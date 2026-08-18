@@ -3,6 +3,7 @@ import { Debris, Players, ReplicatedStorage } from "@rbxts/services";
 import ProfileStore from "@server/ProfileStore";
 import Pigeon from "@shared/Pigeon";
 import { DataStore_Name, DataTemplate, Player_Data } from "@data/PlayerData";
+import "@game/Classes/Structure/BP_BuildableWall";
 //-------------------------------------------------------------------- Pointers
 const GameStorage = ReplicatedStorage.FindFirstChild("PrimaryGame")
 const ClassStorage = GameStorage !== undefined ? GameStorage.FindFirstChild("Classes") : undefined
