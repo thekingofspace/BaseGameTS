@@ -1,8 +1,12 @@
 //-------------------------------------------------------------------- IMPORTS
-import { Debris, Players } from "@rbxts/services";
+import { Debris, Players, ReplicatedStorage } from "@rbxts/services";
 import ProfileStore from "@server/ProfileStore";
 import Pigeon from "@shared/Pigeon";
 import { DataStore_Name, DataTemplate, Player_Data } from "@data/PlayerData";
+//-------------------------------------------------------------------- Pointers
+const GameStorage = ReplicatedStorage.FindFirstChild("PrimaryGame")
+const ClassStorage = GameStorage !== undefined ? GameStorage.FindFirstChild("Classes") : undefined
+const Structures = ClassStorage !== undefined ? ClassStorage.FindFirstChild("Structure") : undefined
 //-------------------------------------------------------------------- TopLine Vars
 const PlayerStore = ProfileStore.New<Player_Data>(DataStore_Name, DataTemplate)
 const CommonNetwork = Pigeon.new<Pigeon.ServerCarrier>("Common")
@@ -240,4 +244,16 @@ Players.PlayerRemoving.Connect(PlayerRemoving)
 for (const Player of Players.GetPlayers()) {
     task.spawn(PlayerAdd, Player) // Spawning to prevent yielding on data
 }
-//-------------------------------------------------------------------- Main Code
+//-------------------------------------------------------------------- Boot Structure
+if (Structures !== undefined) {
+    const Instances = Structures.FindFirstChild("Instances")
+
+    if (Instances !== undefined) {
+        for (const Item of Instances.GetChildren()) {
+            if (Item.IsA("ModuleScript")) {
+                require(Item)
+            }
+        }
+    }
+}
+

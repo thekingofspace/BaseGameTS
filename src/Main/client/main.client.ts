@@ -5,7 +5,7 @@ import Blackbox from "@shared/Blackbox";
 import * as PlayerData from "@game/Classes/PlayerData";
 //-------------------------------------------------------------------- Pointers
 const GameStorage = ReplicatedStorage.WaitForChild("PrimaryGame", 500)
-const ClassStorage = GameStorage !== undefined ? GameStorage.WaitForChild("Classes", 500) : undefined
+const ClassStorage = GameStorage !== undefined ? GameStorage.FindFirstChild("Classes") : undefined
 const Structures = ClassStorage !== undefined ? ClassStorage.FindFirstChild("Structure") : undefined
 //-------------------------------------------------------------------- Topline VARS
 const Log = Blackbox.Get("Client.Boot")
