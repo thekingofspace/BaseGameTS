@@ -24,13 +24,28 @@ PlayerData.Await()
 
 Log.Info("game data recieved", { userId: LocalPlayer.UserId, EventID: "@Data/DataReady" })
 //-------------------------------------------------------------------- Important Vars
-const Money = PlayerData.GetNumber(["Money"], 0)
+const _Money = PlayerData.GetNumber(["Money"], 0)
 
 PlayerData.OnUpdate(["Money"], (Value) => {
     Log.Debug("money changed", { Value: Value })
 })
 //-------------------------------------------------------------------- Vars
+const ActionMap: Record<string, () => any> = {
+    Test: () => {
+        return $tuple("abc", 123);
+    },
 
+    Re: () => {
+        return $tuple("xyz", 456);
+    },
+};
+
+const Result = ActionMap["Var"]?.();
+
+if (Result) {
+    const [Test, Fah]: LuaTuple<[number, string]> = Result;
+    print(Test, Fah)
+}
 //-------------------------------------------------------------------- Boot Structure
 if (Structures !== undefined) {
     const Instances = Structures.FindFirstChild("Instances")
